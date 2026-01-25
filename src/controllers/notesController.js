@@ -14,7 +14,7 @@ export const getAllNotes = async (req, res, next) => {
       Note.find(filter).skip(skip).limit(perPage),
     ]);
 
-    res.status(200).json({
+    res.json({
       page,
       perPage,
       totalNotes,
@@ -28,12 +28,8 @@ export const getAllNotes = async (req, res, next) => {
 
 export const getNoteById = async (req, res, next) => {
   try {
-    const note = await Note.findById(req.params.id);
-
-    if (!note) {
-      return res.status(404).json({ message: 'Note not found' });
-    }
-
+    const note = await Note.findById(req.params.noteId);
+    if (!note) return res.status(404).json({ message: 'Note not found' });
     res.json(note);
   } catch (error) {
     next(error);
@@ -51,13 +47,23 @@ export const createNote = async (req, res, next) => {
 
 export const deleteNote = async (req, res, next) => {
   try {
-    const note = await Note.findByIdAndDelete(req.params.id);
+    const note = await Note.findByIdAndDelete(req.params.noteId);
+    if (!note) return res.status(404).json({ message: 'Note not found' });
+    res.status(200).json(note);
+  } catch (error) {
+    next(error);
+  }
+};
 
-    if (!note) {
-      return res.status(404).json({ message: 'Note not found' });
-    }
-
-    res.status(204).send();
+export const updateNote = async (req, res, next) => {
+  try {
+    const note = await Note.findByIdAndUpdate(
+      req.params.noteId,
+      req.body,
+      { new: true }
+    );
+    if (!note) return res.status(404).json({ message: 'Note not found' });
+    res.json(note);
   } catch (error) {
     next(error);
   }
