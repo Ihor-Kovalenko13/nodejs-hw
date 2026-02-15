@@ -17,6 +17,11 @@ const userSchema = mongoose.Schema(
       type: String,
       trim: true
     },
+    avatar: {
+      type: String,
+      required: false,
+      default: "https://ac.goit.global/fullstack/react/default-avatar.jpg",
+    }
   },
 
   {
